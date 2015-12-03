@@ -49,7 +49,7 @@ namespace AdventOfCode.Day02
         /// Returns all the combinations of dimensions multiplied by each other.
         /// </summary>
         /// <returns></returns>
-        private IEnumerable<int> EnumSides()
+        private IEnumerable<int> EnumSideSquareFootage()
         {
             yield return Length * Width;
             yield return Width * Height;
@@ -58,9 +58,9 @@ namespace AdventOfCode.Day02
 
         public int CalculateRequiredWrappingPaper()
         {
-            var smallestSide = EnumSides().Min();
+            var smallestSide = EnumSideSquareFootage().Min();
 
-            var sideSum = EnumSides()
+            var sideSum = EnumSideSquareFootage()
                 .Select(x => x * 2)
                 .Sum();
 
