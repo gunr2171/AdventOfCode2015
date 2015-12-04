@@ -11,38 +11,37 @@ namespace AdventOfCode.Day04
     {
         static void Main(string[] args)
         {
-            var part1Answer = Processor.GetLowestConcatNumberForSeed("yzbqklnj");
+            var part1Answer = Processor.GetLowestConcatNumberForSeed("yzbqklnj", 5);
+            var part2Answer = Processor.GetLowestConcatNumberForSeed("yzbqklnj", 6);
         }
     }
 
     public static class Processor
     {
-        public static int GetLowestConcatNumberForSeed(string seed)
+        public static int GetLowestConcatNumberForSeed(string seed, int hashLeadingZeros)
         {
-            //hard limit ourselves at 4 million
-            var suffixNumbers = Enumerable.Range(1, 4000000);
+            //hard limit ourselves
+            var suffixNumbers = Enumerable.Range(1, int.MaxValue);
 
             var lowestWorkingNumber = suffixNumbers
-                .Where(x => CheckHash(seed, x))
+                .Where(x => CheckHash(seed, x, hashLeadingZeros))
                 .First();
 
             return lowestWorkingNumber;
         }
 
-        private static bool CheckHash(string seed, int suffix)
+        private static bool CheckHash(string seed, int suffix, int hashLeadingZeros)
         {
             using (var hasher = MD5.Create())
             {
                 var hashBytes = hasher.ComputeHash(Encoding.UTF8.GetBytes(seed + suffix));
 
-                var builder = new StringBuilder();
-                foreach (var hashByte in hashBytes)
-                {
-                    builder.Append(hashByte.ToString("x2"));
-                }
-
-                var fullHash = builder.ToString();
-                return fullHash.Substring(0, 5) == "00000";
+                //we only need to check the first (hashLeadingZeros) characters
+                return hashBytes
+                    .Select(x => x.ToString("x2"))
+                    .SelectMany(x => x)
+                    .Take(hashLeadingZeros)
+                    .All(x => x == '0');
             }
         }
     }
