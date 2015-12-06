@@ -57,8 +57,39 @@ namespace AdventOfCode.Day05
 
         public static bool IsNiceStringV2(string input)
         {
-            bool hasValidRepeatingLetterPair = false;
+            bool hasValidRepeatingLetterPair = DetermineIfInputHasValidRepeatingLetterPair(input);
 
+            if (!hasValidRepeatingLetterPair)
+                return false;
+
+            bool hasValid3LetterCombo = DetermineIfInputHasValid3LetterCombo(input);
+
+            if (!hasValid3LetterCombo)
+                return false;
+
+            return true;
+        }
+
+        public static bool DetermineIfInputHasValid3LetterCombo(string input)
+        {
+            if (input.Length < 3)
+                throw new ArgumentException();
+
+            if (input.Length == 3)
+                return input[0] == input[2];
+            
+            for (int i = 0; i < input.Length - 3; i++)
+            {
+                if (input[i] == input[i + 2])
+                    //hasValid3LetterCombo = true;
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool DetermineIfInputHasValidRepeatingLetterPair(string input)
+        {
             var letterPairs = EnumLetterPairs(input);
 
             var repeatingLetterPairs = letterPairs
@@ -85,27 +116,14 @@ namespace AdventOfCode.Day05
                     if (delta > 1)
                     {
                         //we've found a letter pair that works
-                        hasValidRepeatingLetterPair = true;
+                        //hasValidRepeatingLetterPair = true;
+                        return true;
                     }
                 }
-                
+
             }
 
-            if (!hasValidRepeatingLetterPair)
-                return false;
-
-            bool hasValid3LetterCombo = false;
-
-            for (int i = 0; i < input.Length - 3; i++)
-            {
-                if (input[i] == input[i + 2])
-                    hasValid3LetterCombo = true;
-            }
-
-            if (!hasValid3LetterCombo)
-                return false;
-
-            return true;
+            return false;
         }
 
         private static IEnumerable<LetterPair> EnumLetterPairs(string input)
