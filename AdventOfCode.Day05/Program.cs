@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Day05
@@ -72,108 +73,14 @@ namespace AdventOfCode.Day05
 
         public static bool DetermineIfInputHasValid3LetterCombo(string input)
         {
-            if (input.Length < 3)
-                throw new ArgumentException();
-
-            if (input.Length == 3)
-                return input[0] == input[2];
-            
-            for (int i = 0; i < input.Length - 2; i++)
-            {
-                if (input[i] == input[i + 2])
-                    //hasValid3LetterCombo = true;
-                    return true;
-            }
-
-            return false;
+            var pattern = new Regex(@"(.).\1");
+            return pattern.IsMatch(input);
         }
 
         public static bool DetermineIfInputHasValidRepeatingLetterPair(string input)
         {
-            var letterPairs = EnumLetterPairs(input);
-
-            var repeatingLetterPairs = letterPairs
-                .GroupBy(x => x.ToString())
-                .Where(x => x.Count() > 1)
-                .ToList();
-
-            foreach (var repeatingLetterPairGroup in repeatingLetterPairs)
-            {
-                //foreach repeating letter pair, make sure that there are at least 2 entries that have a delta SourceIndex > 1
-
-                var combinations = repeatingLetterPairGroup.GetKCombs(2);
-
-                foreach (var combo in combinations)
-                {
-                    var a = combo.ToList();
-
-                    //get the delta SourceIndex of the two
-                    var firstSource = combo.First().SourceIndex;
-                    var lastSource = combo.Last().SourceIndex;
-
-                    var delta = Math.Abs(firstSource - lastSource);
-
-                    if (delta > 1)
-                    {
-                        //we've found a letter pair that works
-                        //hasValidRepeatingLetterPair = true;
-                        return true;
-                    }
-                }
-
-            }
-
-            return false;
-        }
-
-        private static IEnumerable<LetterPair> EnumLetterPairs(string input)
-        {
-            //loop through all lettes, except for the last one
-            for (int i = 0; i < input.Length - 1; i++)
-            {
-                yield return new LetterPair(input[i], input[i + 1], i);
-            }
-        }
-
-        public class LetterPair : IComparable, IComparable<LetterPair>
-        {
-            private string letters;
-
-            public int SourceIndex { get; private set; }
-
-            public LetterPair(char val1, char val2, int sourceIndex)
-            {
-                letters = val1.ToString() + val2.ToString();
-                SourceIndex = sourceIndex;
-            }
-
-            public override string ToString()
-            {
-                return letters;
-            }
-
-            //int IComparable<LetterPair>.CompareTo(LetterPair other)
-            //{
-            //    return ToString().CompareTo(other.ToString());
-            //}
-
-            public int CompareTo(object obj)
-            {
-                //var other = (LetterPair)obj;
-                //return ToString().CompareTo(other.ToString());
-
-                return (this as IComparable<LetterPair>).CompareTo((LetterPair)obj);
-            }
-
-            int IComparable<LetterPair>.CompareTo(LetterPair other)
-            {
-                var aValue = letters + SourceIndex;
-                var bValue = other.letters + other.SourceIndex;
-
-                return aValue.CompareTo(bValue);
-
-                //return ToString().CompareTo(other.ToString());
-            }
+            var pattern = new Regex(@"(..).*\1");
+            return pattern.IsMatch(input);
         }
     }
 }
