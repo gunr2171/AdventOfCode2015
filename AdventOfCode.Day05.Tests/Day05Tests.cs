@@ -25,6 +25,8 @@ namespace AdventOfCode.Day05.Tests
         [TestCase("ieodomkazucvgmuy", false)]
         [TestCase("bfbaaa", false)]
         [TestCase("xilodxfuxphuiiii", true)]
+        [TestCase("tdfvkreormspprer", true)]
+        [TestCase("dwmxqudvxqdenrur", true)]
         public void IsNiceStringV2(string input, bool expectedNiceValue)
         {
             var result = Processor.IsNiceStringV2(input);
@@ -38,6 +40,7 @@ namespace AdventOfCode.Day05.Tests
         [TestCase("uurcxstgmygtbstg", false)]
         [TestCase("ieodomkazucvgmuy", true)]
         [TestCase("sszojmmrrkwuftyv", false)]
+        [TestCase("abcdefe", true)]
         public void DetermineIfInputHasValid3LetterCombo(string input, bool expectedResult)
         {
             var result = Processor.DetermineIfInputHasValid3LetterCombo(input);

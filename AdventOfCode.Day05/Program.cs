@@ -78,7 +78,7 @@ namespace AdventOfCode.Day05
             if (input.Length == 3)
                 return input[0] == input[2];
             
-            for (int i = 0; i < input.Length - 3; i++)
+            for (int i = 0; i < input.Length - 2; i++)
             {
                 if (input[i] == input[i + 2])
                     //hasValid3LetterCombo = true;
