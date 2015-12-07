@@ -13,7 +13,7 @@ namespace AdventOfCode.Day07
     {
         static void Main(string[] args)
         {
-            var instructions = File.ReadAllLines("Input.txt");
+            var instructions = File.ReadAllLines("Input.txt").ToList();
 
             var part1Board = new CircuitBoard();
 
@@ -25,6 +25,24 @@ namespace AdventOfCode.Day07
             part1Board.CalculateWireValues();
 
             var part1Answer = part1Board.GetWireSignal("a");
+
+            //----------
+
+            var part2Board = new CircuitBoard();
+
+            var existingBInstruction = instructions.Single(x => x.EndsWith("-> b"));
+            instructions.Remove(existingBInstruction);
+
+            foreach (var instruction in instructions)
+            {
+                part2Board.ApplyInstruction(instruction);
+            }
+
+            part2Board.ApplyInstruction("46065 -> b");
+
+            part2Board.CalculateWireValues();
+
+            var part2Answer = part2Board.GetWireSignal("a");
         }
     }
 
