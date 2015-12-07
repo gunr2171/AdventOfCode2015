@@ -56,6 +56,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdventOfCode.Day07\AdventOfCode.Day07.csproj">
+      <Project>{db3756a4-1268-4184-86fe-b5922d388d68}</Project>
+      <Name>AdventOfCode.Day07</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
