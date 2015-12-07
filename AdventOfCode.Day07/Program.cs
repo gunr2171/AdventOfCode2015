@@ -12,4 +12,41 @@ namespace AdventOfCode.Day07
         {
         }
     }
+
+    public class Wire
+    {
+
+    }
+
+    public abstract class Gate
+    {
+        public Wire OutputWire { get; set; }
+    }
+
+    public class AndGate : Gate
+    {
+
+    }
+
+    public class OrGate : Gate
+    {
+
+    }
+
+    public class LeftShiftGate : Gate
+    {
+
+    }
+
+    public class RightShftGate : Gate
+    {
+
+    }
+
+    public class NotGate : Gate
+    {
+
+    }
+
+
 }
