@@ -29,6 +29,8 @@ namespace AdventOfCode.Day07.Tests
             {
                 part1Board.ApplyInstruction(instruction);
             }
+
+            part1Board.CalculateWireValues();
         }
 
         [TestCase("d", 72)]

@@ -22,6 +22,8 @@ namespace AdventOfCode.Day07
                 part1Board.ApplyInstruction(instruction);
             }
 
+            part1Board.CalculateWireValues();
+
             var part1Answer = part1Board.GetWireSignal("a");
         }
     }
@@ -29,38 +31,71 @@ namespace AdventOfCode.Day07
     public class CircuitBoard
     {
         private List<Wire> wires;
+        private List<Instruction> instructions;
 
         public CircuitBoard()
         {
             wires = new List<Wire>();
+            instructions = new List<Instruction>();
         }
 
         public void ApplyInstruction(string instruction)
         {
             var parsedInstruction = new Instruction(instruction, wires);
+            instructions.Add(parsedInstruction);
+        }
 
-            //run the instruction
-            if (parsedInstruction.Operation != null)
+        public void CalculateWireValues()
+        {
+            foreach (var instruction in instructions)
             {
-                //run the operation
-                var left = parsedInstruction.LeftInputWire?.Value ?? parsedInstruction.LeftInputValue;
-                var right = parsedInstruction.RightInputWire?.Value ?? parsedInstruction.RightInputValue;
-
-                parsedInstruction.OutputWire.Value = parsedInstruction.Operation.CalculateOutputWireSignal(left, right);
-            }
-            else
-            {
-                //set the value
-                var valueToSet = parsedInstruction.LeftInputWire?.Value ?? parsedInstruction.LeftInputValue;
-                parsedInstruction.OutputWire.Value = valueToSet.Value;
+                CalculateWireSignal(instruction.OutputWire);
             }
         }
 
+        private void CalculateWireSignal(Wire wire)
+        {
+            //if the wire already has a value set, stop here.
+            if (wire.Value != null)
+                return;
 
+            //if not, we need to figure out this wire's value
+            //to do that, we need to know where the source is, and calculate that if need be
+
+            //to get the source, find the single instruction that has this wire as the output
+            var sourceInstructionForWire = instructions.Single(x => x.OutputWire == wire);
+
+            //if the instruction uses input wires, we need to resolve those wires first
+            if (sourceInstructionForWire.LeftInputWire != null)
+            {
+                CalculateWireSignal(sourceInstructionForWire.LeftInputWire);
+            }
+            if (sourceInstructionForWire.RightInputWire != null)
+            {
+                CalculateWireSignal(sourceInstructionForWire.RightInputWire);
+            }
+
+            //if the instruction has an operator, run the operation and apply the value to the output wire
+            if (sourceInstructionForWire.Operation != null)
+            {
+                var left = sourceInstructionForWire.LeftInputWire?.Value ?? sourceInstructionForWire.LeftInputValue;
+                var right = sourceInstructionForWire.RightInputWire?.Value ?? sourceInstructionForWire.RightInputValue;
+
+                wire.Value = sourceInstructionForWire.Operation.CalculateOutputWireSignal(left, right);
+            }
+            else if (sourceInstructionForWire.LeftInputWire != null) //else, if the instruction uses a single wire for assignment
+            {
+                wire.Value = sourceInstructionForWire.LeftInputWire.Value.Value;
+            }
+            else //else, this is a number assignment for the wire
+            {
+                wire.Value = sourceInstructionForWire.LeftInputValue.Value;
+            }
+        }
 
         public ushort GetWireSignal(string wireName)
         {
-            return wires.Single(x => x.Name == wireName).Value;
+            return wires.Single(x => x.Name == wireName).Value.Value;
         }
 
 
@@ -144,7 +179,7 @@ namespace AdventOfCode.Day07
     public class Wire
     {
         public string Name { get; set; }
-        public ushort Value { get; set; }
+        public ushort? Value { get; set; }
 
         public override string ToString()
         {
