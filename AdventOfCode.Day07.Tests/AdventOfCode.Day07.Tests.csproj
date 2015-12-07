@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7F012E60-2116-455E-BC3D-84CF09AF4DEA}</ProjectGuid>
+    <ProjectGuid>{477710D0-B9B0-4B89-B88B-6FE9F8CFCE6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AdventOfCode.Day05.Tests</RootNamespace>
-    <AssemblyName>AdventOfCode.Day05.Tests</AssemblyName>
+    <RootNamespace>AdventOfCode.Day07.Tests</RootNamespace>
+    <AssemblyName>AdventOfCode.Day07.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -50,17 +50,11 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Day05Tests.cs" />
+    <Compile Include="Day07Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AdventOfCode.Day05\AdventOfCode.Day05.csproj">
-      <Project>{8f019d17-ab71-4d9c-bfd0-95eddedbd685}</Project>
-      <Name>AdventOfCode.Day05</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
