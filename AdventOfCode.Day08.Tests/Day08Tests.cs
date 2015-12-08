@@ -19,7 +19,7 @@ namespace AdventOfCode.Day08.Tests
             var samplesFilePath = Path.Combine(AssemblyDirectory, "Samples.csv");
 
             examples = File.ReadAllLines(samplesFilePath)
-                .Select(x => x.Split(','))
+                .Select(x => x.Split('\t'))
                 .Skip(1)
                 .Select(x => new Example
                 {
