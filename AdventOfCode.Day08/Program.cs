@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,18 +11,18 @@ namespace AdventOfCode.Day08
     {
         static void Main(string[] args)
         {
-
+            var entries = File.ReadAllLines("Input.txt").ToList();
         }
     }
 
     public static class Processor
     {
-        public static int GetLiteralCharacterCount(string intput)
+        public static int GetLiteralCharacterCount(string input)
         {
-            throw new NotImplementedException();
+            return input.Length;
         }
 
-        public static int GetEscapedCharacterCount(string intput)
+        public static int GetMemoryCharacterCount(string intput)
         {
             throw new NotImplementedException();
         }
