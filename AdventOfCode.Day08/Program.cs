@@ -23,6 +23,12 @@ namespace AdventOfCode.Day08
                 .Sum();
 
             var part1Answer = literalCharCount - memoryCharCount;
+
+            var encodedCharCount = entries
+                .Select(x => Processor.GetEncodedLiterialCharacterCount(x))
+                .Sum();
+
+            var part2Answer = encodedCharCount - literalCharCount;
         }
     }
 
@@ -41,5 +47,12 @@ namespace AdventOfCode.Day08
             return input.Length;
         }
 
+        public static int GetEncodedLiterialCharacterCount(string input)
+        {
+            input = Regex.Replace(input, @"\\|""", "__"); //replace a slash and a double quote with 2 characters
+            input = "-" + input + "-"; //wrap in "quotes"
+
+            return input.Length;            
+        }
     }
 }

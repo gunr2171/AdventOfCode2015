@@ -25,7 +25,8 @@ namespace AdventOfCode.Day08.Tests
                 {
                     Input = x[0],
                     ExpectedLiterialCharCount = x[1].Parse<int>(),
-                    ExpectedMemoryCharCount = x[2].Parse<int>()
+                    ExpectedMemoryCharCount = x[2].Parse<int>(),
+                    ExpectedEncodedLiteralCharCount = x[3].Parse<int>()
                 })
                 .ToList();
         }
@@ -78,6 +79,25 @@ namespace AdventOfCode.Day08.Tests
             var actual = Processor.GetMemoryCharacterCount(example.Input);
             Assert.AreEqual(example.ExpectedMemoryCharCount, actual);
         }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(10)]
+        [TestCase(11)]
+        public void GetEncodedLiterialCharacterCount(int exampleIndex)
+        {
+            var example = examples[exampleIndex];
+            var actual = Processor.GetEncodedLiterialCharacterCount(example.Input);
+            Assert.AreEqual(example.ExpectedEncodedLiteralCharCount, actual);
+        }
     }
 
     public class Example
@@ -85,5 +105,6 @@ namespace AdventOfCode.Day08.Tests
         public string Input { get; set; }
         public int ExpectedLiterialCharCount { get; set; }
         public int ExpectedMemoryCharCount { get; set; }
+        public int ExpectedEncodedLiteralCharCount { get; set; }
     }
 }

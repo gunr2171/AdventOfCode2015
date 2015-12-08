@@ -1,13 +1,13 @@
-Input	Literal Count	Memory Count
-""	2	0
-"abc"	5	3
-"aaa\"aaa"	10	7
-"\x27"	6	1
-"qxfcsmh"	9	7
-"byc\x9dyxuafof\\\xa6uf\\axfozomj\\olh\x6a"	43	29
-"wzntebpxnnt\"vqndz\"i\x47vvjqo\""	34	26
-"higvez\"k\"riewqk"	19	15
-"dlkrbhbrlfrp\\damiauyucwhty"	29	26
-"d\""	5	2
-"yy\"\"uoao\"uripabop"	22	17
-"rjjkfh\x78cf\x2brgceg\"jmdyas\"\\xlv\xb6p"	43	29
+Input	Literal Count	Memory Count	Encoded Literal Count
+""	2	0	6
+"abc"	5	3	9
+"aaa\"aaa"	10	7	16
+"\x27"	6	1	11
+"qxfcsmh"	9	7	13
+"byc\x9dyxuafof\\\xa6uf\\axfozomj\\olh\x6a"	43	29	56
+"wzntebpxnnt\"vqndz\"i\x47vvjqo\""	34	26	45
+"higvez\"k\"riewqk"	19	15	27
+"dlkrbhbrlfrp\\damiauyucwhty"	29	26	35
+"d\""	5	2	11
+"yy\"\"uoao\"uripabop"	22	17	32
+"rjjkfh\x78cf\x2brgceg\"jmdyas\"\\xlv\xb6p"	43	29	56
