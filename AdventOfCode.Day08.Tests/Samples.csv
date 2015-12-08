@@ -3,3 +3,10 @@ Input	Literal Count	Memory Count
 "abc"	5	3
 "aaa\"aaa"	10	7
 "\x27"	6	1
+"qxfcsmh"	9	7
+"byc\x9dyxuafof\\\xa6uf\\axfozomj\\olh\x6a"	43	29
+"wzntebpxnnt\"vqndz\"i\x47vvjqo\""	34	26
+"higvez\"k\"riewqk"	19	15
+"dlkrbhbrlfrp\\damiauyucwhty"	29	26
+"d\""	5	2
+"yy\"\"uoao\"uripabop"	22	17
