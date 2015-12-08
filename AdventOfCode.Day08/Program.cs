@@ -35,8 +35,7 @@ namespace AdventOfCode.Day08
 
         public static int GetMemoryCharacterCount(string input)
         {
-            input = Regex.Replace(input, @"(\\x\w\w)", "_"); //get rid of hex values
-            input = Regex.Replace(input, @"(\\.)", "_"); //get rid of a slash-something.
+            input = Regex.Replace(input, @"(\\(?:[^x]|x..))", "_"); //get rid of hex values and slash-something's
             input = input.Substring(1, input.Length - 2); //get rid of the first and last char (double quotes)
 
             return input.Length;
