@@ -52,6 +52,7 @@ namespace AdventOfCode.Day08.Tests
         [TestCase(8)]
         [TestCase(9)]
         [TestCase(10)]
+        [TestCase(11)]
         public void GetLiteralCharacterCount(int exampleIndex)
         {
             var example = examples[exampleIndex];
@@ -70,6 +71,7 @@ namespace AdventOfCode.Day08.Tests
         [TestCase(8)]
         [TestCase(9)]
         [TestCase(10)]
+        [TestCase(11)]
         public void GetMemoryCharacterCount(int exampleIndex)
         {
             var example = examples[exampleIndex];
