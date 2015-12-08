@@ -96,8 +96,8 @@ namespace AdventOfCode.Day07
             //if the instruction has an operator, run the operation and apply the value to the output wire
             if (sourceInstructionForWire.Operation != null)
             {
-                var left = sourceInstructionForWire.LeftInputWire?.Value ?? sourceInstructionForWire.LeftInputValue;
-                var right = sourceInstructionForWire.RightInputWire?.Value ?? sourceInstructionForWire.RightInputValue;
+                var left = sourceInstructionForWire.LeftInputWire.InnerValueOrDefault<Wire, ushort?>(x=>x.Value, null) ?? sourceInstructionForWire.LeftInputValue;
+                var right = sourceInstructionForWire.RightInputWire.InnerValueOrDefault<Wire, ushort?>(x => x.Value, null) ?? sourceInstructionForWire.RightInputValue;
 
                 wire.Value = sourceInstructionForWire.Operation.CalculateOutputWireSignal(left, right);
             }
@@ -201,7 +201,7 @@ namespace AdventOfCode.Day07
 
         public override string ToString()
         {
-            return $"{Name} | {Value}";
+            return string.Format("{0} | {1}", Name, Value);
         }
     }
 
@@ -212,27 +212,27 @@ namespace AdventOfCode.Day07
 
     public class AndGate : Gate
     {
-        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) => (ushort)(left.Value & right.Value);
+        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) { return (ushort)(left.Value & right.Value); }
     }
 
     public class OrGate : Gate
     {
-        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) => (ushort)(left.Value | right.Value);
+        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) { return (ushort)(left.Value | right.Value); }
     }
 
     public class LeftShiftGate : Gate
     {
-        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) => (ushort)(left.Value << right.Value);
+        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) { return (ushort)(left.Value << right.Value); }
     }
 
     public class RightShftGate : Gate
     {
-        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) => (ushort)(left.Value >> right.Value);
+        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) { return (ushort)(left.Value >> right.Value); }
     }
 
     public class NotGate : Gate
     {
-        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) => (ushort)~right.Value;
+        public override ushort CalculateOutputWireSignal(ushort? left, ushort? right) { return (ushort)~right.Value; }
     }
 
 
