@@ -6,17 +6,34 @@ namespace AdventOfCode.Day09.Tests
     [TestFixture]
     public class Day09Tests
     {
-        [Test]
-        public void Part1Example()
+        private Calculator part1Calculator;
+
+        [OneTimeSetUp]
+        public void Part1Setup()
         {
-            var calculator = new Calculator();
+            part1Calculator = new Calculator();
 
-            calculator.AddDistanceRecord("London to Dublin = 464");
-            calculator.AddDistanceRecord("London to Belfast = 518");
-            calculator.AddDistanceRecord("Dublin to Belfast = 141");
+            part1Calculator.AddDistanceRecord("London to Dublin = 464");
+            part1Calculator.AddDistanceRecord("London to Belfast = 518");
+            part1Calculator.AddDistanceRecord("Dublin to Belfast = 141");
+        }
 
-            var actual = calculator.CalculateShortestRoute();
+        [TestCase(982, "Dublin", "London", "Belfast")]
+        [TestCase(605, "London", "Dublin", "Belfast")]
+        [TestCase(659, "London", "Belfast", "Dublin")]
+        [TestCase(659, "Dublin", "Belfast", "London")]
+        [TestCase(605, "Belfast", "Dublin", "London")]
+        [TestCase(982, "Belfast", "London", "Dublin")]
+        public void GenerateDistanceFromCityList(int expectedDistance, params string[] cities)
+        {
+            var actual = part1Calculator.GenerateDistanceFromCityList(cities);
+            Assert.AreEqual(expectedDistance, actual);
+        }
 
+        [Test]
+        public void CalculateShortestRoute()
+        {
+            var actual = part1Calculator.CalculateShortestRoute();
             Assert.AreEqual(605, actual);
         }
     }

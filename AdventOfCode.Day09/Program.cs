@@ -42,7 +42,7 @@ namespace AdventOfCode.Day09
         public int CalculateShortestRoute()
         {
             var cityCount = EnumCities().Count();
-            var allCityCombinations = EnumCities().GetKCombs(cityCount);
+            var allCityCombinations = EnumCities().GetPermutations(cityCount);
 
             var shortestDistance = allCityCombinations
                 .Select(x => GenerateDistanceFromCityList(x))
@@ -51,7 +51,7 @@ namespace AdventOfCode.Day09
             return shortestDistance;
         }
 
-        private int GenerateDistanceFromCityList(IEnumerable<string> cityList)
+        public int GenerateDistanceFromCityList(IEnumerable<string> cityList)
         {
             var list = cityList.ToList();
             var runningSum = 0;
