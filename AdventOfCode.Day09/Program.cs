@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,6 +13,15 @@ namespace AdventOfCode.Day09
     {
         static void Main(string[] args)
         {
+            var distanceRecords = File.ReadAllLines("Input.txt");
+            var calculator = new Calculator();
+
+            foreach(var record in distanceRecords)
+            {
+                calculator.AddDistanceRecord(record);   
+            }
+
+            var part1Answer = calculator.CalculateShortestRoute();
         }
     }
 
