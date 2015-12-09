@@ -36,5 +36,12 @@ namespace AdventOfCode.Day09.Tests
             var actual = part1Calculator.CalculateShortestRoute();
             Assert.AreEqual(605, actual);
         }
+
+        [Test]
+        public void CalculateLongestRoute()
+        {
+            var actual = part1Calculator.CalculateLongestRoute();
+            Assert.AreEqual(982, actual);
+        }
     }
 }

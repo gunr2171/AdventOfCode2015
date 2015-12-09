@@ -22,6 +22,7 @@ namespace AdventOfCode.Day09
             }
 
             var part1Answer = calculator.CalculateShortestRoute();
+            var part2Answer = calculator.CalculateLongestRoute();
         }
     }
 
@@ -47,6 +48,18 @@ namespace AdventOfCode.Day09
             var shortestDistance = allCityCombinations
                 .Select(x => GenerateDistanceFromCityList(x))
                 .Min();
+
+            return shortestDistance;
+        }
+
+        public int CalculateLongestRoute()
+        {
+            var cityCount = EnumCities().Count();
+            var allCityCombinations = EnumCities().GetPermutations(cityCount);
+
+            var shortestDistance = allCityCombinations
+                .Select(x => GenerateDistanceFromCityList(x))
+                .Max();
 
             return shortestDistance;
         }
