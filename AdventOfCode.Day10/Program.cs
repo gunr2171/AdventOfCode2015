@@ -19,7 +19,7 @@ namespace AdventOfCode.Day10
                 part1TempAnswer = Processor.GetNextLookAndSayValue(part1TempAnswer);
             }
 
-            var part1Answer = part1TempAnswer;
+            var part1Answer = part1TempAnswer.Length;
         }
     }
 
