@@ -20,6 +20,15 @@ namespace AdventOfCode.Day10
             }
 
             var part1Answer = part1TempAnswer.Length;
+
+            //ten more times
+            var part2TempAnswer = part1TempAnswer;
+            for (int i = 0; i < 10; i++)
+            {
+                part2TempAnswer = Processor.GetNextLookAndSayValue(part2TempAnswer);
+            }
+
+            var part2Answer = part2TempAnswer.Length;
         }
     }
 
