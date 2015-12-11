@@ -12,6 +12,9 @@ namespace AdventOfCode.Day11
     {
         static void Main(string[] args)
         {
+            var input = "cqjxjnds";
+
+            var part1Answer = Processor.GetNextPassword(input);
         }
     }
 
@@ -29,7 +32,31 @@ namespace AdventOfCode.Day11
 
         public static string GetNextPassword(string input)
         {
-            throw new NotImplementedException();
+            var allPasswordPermutations = passwordLetters.GetPermutationsWithRept(8);
+
+            var nextPassword = allPasswordPermutations
+                .Select(x => x.ToCSV(""))
+                .Where(x => IsNewPasswordAfterStartingPassword(x, input))
+                .Where(x => PassesRule1(x))
+                .Where(x => PassesRule2(x))
+                .Where(x => PassesRule3(x))
+                .First();
+
+            return nextPassword;
+        }
+
+        public static bool IsNewPasswordAfterStartingPassword(string newPassword, string oldPassword)
+        {
+            if (newPassword.Length != oldPassword.Length)
+                throw new ArgumentException();
+
+            var comparison = newPassword.CompareTo(oldPassword);
+
+            if (comparison == 1) //if the new password is larger
+                return true;
+
+            //else, they are equal or the new password is smaller
+            return false;
         }
 
         public static bool PassesRule1(string input)
@@ -80,6 +107,17 @@ namespace AdventOfCode.Day11
         {
             var isMatch = Regex.IsMatch(input, @"(.)\1.*(.)\2");
             return isMatch;
+        }
+    }
+
+    public static class Extensions
+    {
+        public static IEnumerable<IEnumerable<T>> GetPermutationsWithRept<T>(this IEnumerable<T> list, int length)
+        {
+            if (length == 1) return list.Select(t => new T[] { t });
+            return GetPermutationsWithRept(list, length - 1)
+                .SelectMany(t => list,
+                    (t1, t2) => t1.Concat(new T[] { t2 }));
         }
     }
 }
