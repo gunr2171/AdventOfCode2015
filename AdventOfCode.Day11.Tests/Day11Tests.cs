@@ -4,11 +4,12 @@ using NUnit.Framework;
 namespace AdventOfCode.Day11.Tests
 {
     [TestFixture]
-    public class UnitTest1
+    public class Day11Tests
     {
         [Test]
-        public void TestMethod1()
+        public void PassesRule1()
         {
+
         }
     }
 }

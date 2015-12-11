@@ -12,4 +12,22 @@ namespace AdventOfCode.Day11
         {
         }
     }
+
+    public static class Processor
+    {
+        public bool PassesRule1(string input)
+        {
+
+        }
+
+        public bool PassesRule2(string input)
+        {
+
+        }
+
+        public bool PassesRule3(string input)
+        {
+
+        }
+    }
 }
