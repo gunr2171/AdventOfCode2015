@@ -20,8 +20,6 @@ namespace AdventOfCode.Day11
 
     public static class Processor
     {
-        private static List<char> passwordLetters;
-
         public static IEnumerable<string> EnumPossiblePasswords(string startingPassword)
         {
             var currentPassword = startingPassword;
@@ -62,14 +60,6 @@ namespace AdventOfCode.Day11
             return result;
         }
 
-        static Processor() //yeah static constructors, because it makes sense!
-        {
-            passwordLetters = Enumerable.Range(97, 26)
-                .Select(x => (char)x)
-                .OrderBy(x => x)
-                .ToList();
-        }
-
         public static string GetNextPassword(string input)
         {
             var possiblePasswords = EnumPossiblePasswords(input);
@@ -82,20 +72,6 @@ namespace AdventOfCode.Day11
 
             return nextPassword;
         }
-
-        //public static bool IsNewPasswordAfterStartingPassword(string newPassword, string oldPassword)
-        //{
-        //    if (newPassword.Length != oldPassword.Length)
-        //        throw new ArgumentException();
-
-        //    var comparison = newPassword.CompareTo(oldPassword);
-
-        //    if (comparison == 1) //if the new password is larger
-        //        return true;
-
-        //    //else, they are equal or the new password is smaller
-        //    return false;
-        //}
 
         public static bool PassesRule1(string input)
         {
@@ -145,17 +121,6 @@ namespace AdventOfCode.Day11
         {
             var isMatch = Regex.IsMatch(input, @"(.)\1.*(.)\2");
             return isMatch;
-        }
-    }
-
-    public static class Extensions
-    {
-        public static IEnumerable<IEnumerable<T>> GetPermutationsWithRept<T>(this IEnumerable<T> list, int length)
-        {
-            if (length == 1) return list.Select(t => new T[] { t });
-            return GetPermutationsWithRept(list, length - 1)
-                .SelectMany(t => list,
-                    (t1, t2) => t1.Concat(new T[] { t2 }));
         }
     }
 }
