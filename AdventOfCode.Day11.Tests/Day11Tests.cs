@@ -43,13 +43,22 @@ namespace AdventOfCode.Day11.Tests
             Assert.AreEqual(expectedNextPassword, actual);
         }
 
-        [TestCase("abc", "abd", true)]
-        [TestCase("abcd", "afad", true)]
-        [TestCase("abcd", "aabc", false)]
-        public void IsNewPasswordAfterStartingPassword(string oldPassword, string newPassword, bool expectedPass)
+        [TestCase("aaab", "aaac")]
+        [TestCase("azz", "baa")]
+        [TestCase("ahz", "aja")]
+        public void IncrementPassword(string startingPassword, string expectedNextPassword)
         {
-            var actual = Processor.IsNewPasswordAfterStartingPassword(newPassword, oldPassword);
-            Assert.AreEqual(expectedPass, actual);
+            var actual = Processor.IncrementPassword(startingPassword);
+            Assert.AreEqual(expectedNextPassword, actual);
         }
+
+        //[TestCase("abc", "abd", true)]
+        //[TestCase("abcd", "afad", true)]
+        //[TestCase("abcd", "aabc", false)]
+        //public void IsNewPasswordAfterStartingPassword(string oldPassword, string newPassword, bool expectedPass)
+        //{
+        //    var actual = Processor.IsNewPasswordAfterStartingPassword(newPassword, oldPassword);
+        //    Assert.AreEqual(expectedPass, actual);
+        //}
     }
 }

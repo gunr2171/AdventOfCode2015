@@ -72,11 +72,9 @@ namespace AdventOfCode.Day11
 
         public static string GetNextPassword(string input)
         {
-            var allPasswordPermutations = passwordLetters.GetPermutationsWithRept(8);
+            var possiblePasswords = EnumPossiblePasswords(input);
 
-            var nextPassword = allPasswordPermutations
-                .Select(x => x.ToCSV(""))
-                .Where(x => IsNewPasswordAfterStartingPassword(x, input))
+            var nextPassword = possiblePasswords
                 .Where(x => PassesRule1(x))
                 .Where(x => PassesRule2(x))
                 .Where(x => PassesRule3(x))
@@ -85,19 +83,19 @@ namespace AdventOfCode.Day11
             return nextPassword;
         }
 
-        public static bool IsNewPasswordAfterStartingPassword(string newPassword, string oldPassword)
-        {
-            if (newPassword.Length != oldPassword.Length)
-                throw new ArgumentException();
+        //public static bool IsNewPasswordAfterStartingPassword(string newPassword, string oldPassword)
+        //{
+        //    if (newPassword.Length != oldPassword.Length)
+        //        throw new ArgumentException();
 
-            var comparison = newPassword.CompareTo(oldPassword);
+        //    var comparison = newPassword.CompareTo(oldPassword);
 
-            if (comparison == 1) //if the new password is larger
-                return true;
+        //    if (comparison == 1) //if the new password is larger
+        //        return true;
 
-            //else, they are equal or the new password is smaller
-            return false;
-        }
+        //    //else, they are equal or the new password is smaller
+        //    return false;
+        //}
 
         public static bool PassesRule1(string input)
         {
