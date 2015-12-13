@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,6 +13,16 @@ namespace AdventOfCode.Day13
     {
         static void Main(string[] args)
         {
+            var relationships = File.ReadAllLines("Input.txt");
+
+            var part1Table = new Table();
+
+            foreach (var relationship in relationships)
+            {
+                part1Table.AddRelationship(relationship);
+            }
+
+            var part1Answer = part1Table.FindBestNetHappinessArrangement();
         }
     }
 
