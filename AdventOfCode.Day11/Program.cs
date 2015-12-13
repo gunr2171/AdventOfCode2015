@@ -22,6 +22,46 @@ namespace AdventOfCode.Day11
     {
         private static List<char> passwordLetters;
 
+        public static IEnumerable<string> EnumPossiblePasswords(string startingPassword)
+        {
+            var currentPassword = startingPassword;
+
+            while (currentPassword != "zzzzzzzz")
+            {
+                currentPassword = IncrementPassword(currentPassword);
+                yield return currentPassword;
+            }
+        }
+
+        public static string IncrementPassword(string inputPassword)
+        {
+            var incrementedPassword = IncrementPassword(inputPassword.ToCharArray(), inputPassword.Length - 1);
+            return incrementedPassword;
+        }
+
+        private static string IncrementPassword(char[] chars, int indexToIncrement)
+        {
+            if (chars[indexToIncrement] == 'z') //if the char you are tring to increase is at the end
+            {
+                chars[indexToIncrement] = 'a'; //set it back to the start 
+
+                if (indexToIncrement > 0) //and assuming you are not at the far left side of the string
+                    chars = IncrementPassword(chars, indexToIncrement - 1).ToCharArray(); //increase the char to the left of this one
+            }
+            else //just increment this char as normal
+            {
+                char newChar = ++chars[indexToIncrement];
+
+                if (newChar == 'i' || newChar == 'l' || newChar == 'o')
+                    newChar++; //skip it
+
+                chars[indexToIncrement] = newChar;
+            }
+
+            var result = chars.ToCSV("");
+            return result;
+        }
+
         static Processor() //yeah static constructors, because it makes sense!
         {
             passwordLetters = Enumerable.Range(97, 26)
