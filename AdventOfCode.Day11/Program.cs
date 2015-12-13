@@ -15,6 +15,7 @@ namespace AdventOfCode.Day11
             var input = "cqjxjnds";
 
             var part1Answer = Processor.GetNextPassword(input);
+            var part2Answer = Processor.GetNextPassword(part1Answer);
         }
     }
 
