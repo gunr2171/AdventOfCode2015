@@ -15,14 +15,18 @@ namespace AdventOfCode.Day13
         {
             var relationships = File.ReadAllLines("Input.txt");
 
-            var part1Table = new Table();
+            var table = new Table();
 
             foreach (var relationship in relationships)
             {
-                part1Table.AddRelationship(relationship);
+                table.AddRelationship(relationship);
             }
 
-            var part1Answer = part1Table.FindBestNetHappinessArrangement();
+            var part1Answer = table.FindBestNetHappinessArrangement();
+
+            table.AddNeutralMember();
+
+            var part2Answer = table.FindBestNetHappinessArrangement();
         }
     }
 
@@ -33,6 +37,25 @@ namespace AdventOfCode.Day13
         public void AddRelationship(string rawRelationship)
         {
             relationships.Add(new Relationship(rawRelationship));
+        }
+
+        public void AddNeutralMember()
+        {
+            var allTableMembers = relationships
+                .Select(x => x.AffectedPerson)
+                .Distinct()
+                .ToList();
+
+            foreach (var tableMember in allTableMembers)
+            {
+                //construct a relationship where you are the affected member
+                var selfAffectedRelationship = new Relationship("self", tableMember, 0);
+                relationships.Add(selfAffectedRelationship);
+
+                //construct a relationship where the other member is the affected member
+                var otherAffectedRelationship = new Relationship(tableMember, "self", 0);
+                relationships.Add(otherAffectedRelationship);
+            }
         }
 
         public int FindBestNetHappinessArrangement()
@@ -109,6 +132,13 @@ namespace AdventOfCode.Day13
 
             if (match.Groups[2].Value == "lose")
                 HappinessOffset = -HappinessOffset; //negitize the value
+        }
+
+        public Relationship(string affected, string influencer, int happinessOffset)
+        {
+            AffectedPerson = affected;
+            Influencer = influencer;
+            HappinessOffset = happinessOffset;
         }
     }
 
