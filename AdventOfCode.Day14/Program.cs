@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +13,16 @@ namespace AdventOfCode.Day14
     {
         static void Main(string[] args)
         {
+            var inputLines = File.ReadAllLines("Input.txt");
 
+            var part1Race = new Race();
+
+            foreach(var line in inputLines)
+            {
+                part1Race.AddReindeer(line);
+            }
+
+            var part1Answer = part1Race.CalculateDistanceOfFurthestReindeerAtMoment(2503);
         }
     }
 
