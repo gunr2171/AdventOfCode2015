@@ -15,14 +15,15 @@ namespace AdventOfCode.Day14
         {
             var inputLines = File.ReadAllLines("Input.txt");
 
-            var part1Race = new Race();
+            var race = new Race();
 
             foreach(var line in inputLines)
             {
-                part1Race.AddReindeer(line);
+                race.AddReindeer(line);
             }
 
-            var part1Answer = part1Race.CalculateDistanceOfFurthestReindeerAtMoment(2503);
+            var part1Answer = race.CalculateDistanceOfFurthestReindeerAtMoment(2503);
+            var part2Answer = race.CalculateMostPointsAtMoment(2503);
         }
     }
 
