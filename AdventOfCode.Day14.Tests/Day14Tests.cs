@@ -6,10 +6,10 @@ namespace AdventOfCode.Day14.Tests
     [TestFixture]
     public class Day14Tests
     {
-        Race part1race;
+        Race race;
 
         [OneTimeSetUp]
-        public void SetupPart1Example()
+        public void SetupExample()
         {
             var racers = new[]
             {
@@ -17,11 +17,11 @@ namespace AdventOfCode.Day14.Tests
                 "Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."
             };
 
-            part1race = new Race();
+            race = new Race();
 
             foreach (var racer in racers)
             {
-                part1race.AddReindeer(racer);
+                race.AddReindeer(racer);
             }
         }
 
@@ -30,9 +30,18 @@ namespace AdventOfCode.Day14.Tests
         [TestCase(11, 176)]
         [TestCase(12, 176)]
         [TestCase(1000, 1120)]
-        public void Part1Example(int secondsElapsed, int expectedFurthestDistance)
+        public void CalculateDistanceOfFurthestReindeerAtMoment(int secondsElapsed, int expectedFurthestDistance)
         {
-            var actual = part1race.CalculateDistanceOfFurthestReindeerAtMoment(secondsElapsed);
+            var actual = race.CalculateDistanceOfFurthestReindeerAtMoment(secondsElapsed);
+            Assert.AreEqual(expectedFurthestDistance, actual);
+        }
+
+        [TestCase(1, 1)]
+        [TestCase(140, 139)]
+        [TestCase(1000, 689)]
+        public void CalculateMostPointsAtMoment(int secondsElapsed, int expectedFurthestDistance)
+        {
+            var actual = race.CalculateMostPointsAtMoment(secondsElapsed);
             Assert.AreEqual(expectedFurthestDistance, actual);
         }
     }

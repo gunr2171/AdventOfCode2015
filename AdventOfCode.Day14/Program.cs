@@ -37,6 +37,29 @@ namespace AdventOfCode.Day14
 
         public int CalculateDistanceOfFurthestReindeerAtMoment(int secondsElasped)
         {
+            List<Racer> racers = SimulateRace(secondsElasped);
+
+            //done simulating the race, find the winner
+            var furthestDistance = racers
+                .Select(x => x.CurrentDistance)
+                .Max();
+
+            return furthestDistance;
+        }
+
+        public int CalculateMostPointsAtMoment(int secondsElasped)
+        {
+            List<Racer> racers = SimulateRace(secondsElasped);
+
+            var mostPoints = racers
+                .Select(x => x.Score)
+                .Max();
+
+            return mostPoints;
+        }
+
+        private List<Racer> SimulateRace(int secondsElasped)
+        {
             //value represents the current distance
             var racers = reindeers
                 .Select(x => new Racer
@@ -44,7 +67,8 @@ namespace AdventOfCode.Day14
                     Reindeer = x,
                     IsFlying = true,
                     NextStatusChangeAt = x.MaxTravelTime + 1,
-                    CurrentDistance = 0
+                    CurrentDistance = 0,
+                    Score = 0
                 })
                 .ToList();
 
@@ -66,14 +90,24 @@ namespace AdventOfCode.Day14
                         racer.CurrentDistance += racer.Reindeer.Speed;
                     }
                 }
+
+                //figure out the furthest distance
+                var furthestDistance = racers
+                    .Select(x => x.CurrentDistance)
+                    .Max();
+
+                //get all reindeer with that distance
+                var racersInLead = racers
+                    .Where(x => x.CurrentDistance == furthestDistance);
+
+                //go through each of them and give them a point
+                foreach (var racerInLead in racersInLead)
+                {
+                    racerInLead.Score += 1;
+                }
             }
 
-            //done simulating the race, find the winner
-            var furthestDistance = racers
-                .Select(x => x.CurrentDistance)
-                .Max();
-
-            return furthestDistance;
+            return racers;
         }
     }
 
@@ -83,6 +117,7 @@ namespace AdventOfCode.Day14
         public bool IsFlying { get; set; }
         public int NextStatusChangeAt { get; set; }
         public int CurrentDistance { get; set; }
+        public int Score { get; set; }
     }
 
     public class Reindeer
