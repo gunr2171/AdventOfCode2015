@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TCL.Extensions;
+using AdventOfCode.Common;
+using System.IO;
 
 namespace AdventOfCode.Day15
 {
@@ -66,6 +68,34 @@ namespace AdventOfCode.Day15
                 summedIngredientScores.Texture;
 
             return totalCookieScore;
+        }
+
+        public int DetermineBestCookieScoreForIngredientsList()
+        {
+            var bestRatio = EnumPossibleRatios()
+                .Select(x => GetCookieScore(x))
+                .Max();
+
+            return bestRatio;
+        }
+
+        public IEnumerable<Dictionary<string, int>> EnumPossibleRatios()
+        {
+            var ingredientNames = ingredients.Select(x => x.Name);
+            var ratioNumbers = Enumerable.Range(1, 100);
+
+            var ratioPermutations = ratioNumbers
+                .GetPermutationsWithRept(ingredients.Count)
+                .Where(x => x.Sum() == 100);
+
+            foreach (var ratioPermutation in ratioPermutations)
+            {
+                var ratioInfo = ratioPermutation
+                    .Zip(ingredientNames, (x, y) => new { Name = y, Ratio = x })
+                    .ToDictionary(x => x.Name, x => x.Ratio);
+
+                yield return ratioInfo;
+            }
         }
     }
 

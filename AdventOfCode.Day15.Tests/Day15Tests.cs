@@ -30,5 +30,13 @@ namespace AdventOfCode.Day15.Tests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void DetermineBestCookieScoreForIngredientsListForExample()
+        {
+            var expected = 62842880;
+            var actual = recipe.DetermineBestCookieScoreForIngredientsList();
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
