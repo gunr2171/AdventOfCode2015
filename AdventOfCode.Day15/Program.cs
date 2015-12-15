@@ -14,7 +14,16 @@ namespace AdventOfCode.Day15
     {
         static void Main(string[] args)
         {
+            var ingredientsList = File.ReadAllLines("Input.txt");
 
+            var recipe = new Recipe();
+
+            foreach (var ingredient in ingredientsList)
+            {
+                recipe.AddIngredient(ingredient);
+            }
+
+            var part1Answer = recipe.DetermineBestCookieScoreForIngredientsList();
         }
     }
 
@@ -32,8 +41,10 @@ namespace AdventOfCode.Day15
         /// </summary>
         /// <param name="ingredientRatios">Key value is the name of the ingredient. Value is the 0-100 ratio of the cookie.</param>
         /// <returns></returns>
-        public int GetCookieScore(Dictionary<string, int> ingredientRatios)
+        public Cookie CalculateCookieFromRatioList(Dictionary<string, int> ingredientRatios)
         {
+            var cookie = new Cookie();
+
             var summedIngredientScores = ingredientRatios
                 .Join(ingredients,
                       (x) => x.Key,
@@ -44,36 +55,57 @@ namespace AdventOfCode.Day15
                     Capacity = x.Ingredient.Capacity * x.Ratio,
                     Durrability = x.Ingredient.Durrability * x.Ratio,
                     Flavor = x.Ingredient.Flavor * x.Ratio,
-                    Texture = x.Ingredient.Texture * x.Ratio
+                    Texture = x.Ingredient.Texture * x.Ratio,
+                    Calories = x.Ingredient.Calories * x.Ratio
                 })
                 .Aggregate((x, y) => new
                 {
                     Capacity = x.Capacity + y.Capacity,
                     Durrability = x.Durrability + y.Durrability,
                     Flavor = x.Flavor + y.Flavor,
-                    Texture = x.Texture + y.Texture
+                    Texture = x.Texture + y.Texture,
+                    Calories = x.Calories + y.Calories
                 });
 
             // if any of the properties is 0 or lower, the result of the multiplication
             // will be 0, so just return now
-            if (summedIngredientScores.Capacity <= 0) return 0;
-            if (summedIngredientScores.Durrability <= 0) return 0;
-            if (summedIngredientScores.Flavor <= 0) return 0;
-            if (summedIngredientScores.Texture <= 0) return 0;
+            if (summedIngredientScores.Capacity <= 0 ||
+                summedIngredientScores.Durrability <= 0 ||
+                summedIngredientScores.Flavor <= 0 ||
+                summedIngredientScores.Texture <= 0)
+            {
+                cookie.Score = 0;
+            }
+            else
+            {
+                cookie.Score = 
+                    summedIngredientScores.Capacity *
+                    summedIngredientScores.Durrability *
+                    summedIngredientScores.Flavor *
+                    summedIngredientScores.Texture;
+            }
 
-            var totalCookieScore =
-                summedIngredientScores.Capacity *
-                summedIngredientScores.Durrability *
-                summedIngredientScores.Flavor *
-                summedIngredientScores.Texture;
+            cookie.Calories = summedIngredientScores.Calories;
 
-            return totalCookieScore;
+            return cookie;
         }
 
         public int DetermineBestCookieScoreForIngredientsList()
         {
             var bestRatio = EnumPossibleRatios()
-                .Select(x => GetCookieScore(x))
+                .Select(x => CalculateCookieFromRatioList(x))
+                .Select(x => x.Score)
+                .Max();
+
+            return bestRatio;
+        }
+
+        public int DetermineBestCookieScoreForIngredientsListWithCalorieRestriction(int calories)
+        {
+            var bestRatio = EnumPossibleRatios()
+                .Select(x => CalculateCookieFromRatioList(x))
+                .Where(x => x.Calories == calories)
+                .Select(x => x.Score)
                 .Max();
 
             return bestRatio;
@@ -97,6 +129,12 @@ namespace AdventOfCode.Day15
                 yield return ratioInfo;
             }
         }
+    }
+
+    public class Cookie
+    {
+        public int Calories { get; set; }
+        public int Score { get; set; }
     }
 
     public class Ingredient
