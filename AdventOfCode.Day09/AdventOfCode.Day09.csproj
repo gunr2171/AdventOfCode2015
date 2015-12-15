@@ -58,6 +58,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdventOfCode.Common\AdventOfCode.Common.csproj">
+      <Project>{c4b7c62d-66ea-4a3b-8566-56ba57bd2a1d}</Project>
+      <Name>AdventOfCode.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TCL.Extensions;
+using AdventOfCode.Common;
 
 namespace AdventOfCode.Day13
 {
@@ -139,17 +140,6 @@ namespace AdventOfCode.Day13
             AffectedPerson = affected;
             Influencer = influencer;
             HappinessOffset = happinessOffset;
-        }
-    }
-
-    public static class Extensions
-    {
-        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
-        {
-            if (length == 1) return list.Select(t => new T[] { t });
-            return GetPermutations(list, length - 1)
-                .SelectMany(t => list.Where(o => !t.Contains(o)),
-                    (t1, t2) => t1.Concat(new T[] { t2 }));
         }
     }
 }
