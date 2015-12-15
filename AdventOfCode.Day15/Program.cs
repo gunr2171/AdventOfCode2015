@@ -24,6 +24,7 @@ namespace AdventOfCode.Day15
             }
 
             var part1Answer = recipe.DetermineBestCookieScoreForIngredientsList();
+            var part2Answer = recipe.DetermineBestCookieScoreForIngredientsListWithCalorieRestriction(500);
         }
     }
 
