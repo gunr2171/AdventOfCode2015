@@ -20,31 +20,31 @@ namespace AdventOfCode.Day16
                 .ToList();
 
             var part1MatchingSues = auntSues
-                .Where(x => Processor.TestValueEqualityOrNull(x.Children, 3))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Cats, 7))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Samoyeds, 2))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Pomeranians, 3))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Akitas, 0))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Vizslas, 0))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Goldfish, 5))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Trees, 3))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Cars, 2))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Perfumes, 1))
+                .Where(x => Processor.TestValueEqualityOrNull(x["children"], 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x["cats"], 7))
+                .Where(x => Processor.TestValueEqualityOrNull(x["samoyeds"], 2))
+                .Where(x => Processor.TestValueEqualityOrNull(x["pomeranians"], 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x["akitas"], 0))
+                .Where(x => Processor.TestValueEqualityOrNull(x["vizslas"], 0))
+                .Where(x => Processor.TestValueEqualityOrNull(x["goldfish"], 5))
+                .Where(x => Processor.TestValueEqualityOrNull(x["trees"], 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x["cars"], 2))
+                .Where(x => Processor.TestValueEqualityOrNull(x["perfumes"], 1))
                 .ToList();
 
             var part1Answer = part1MatchingSues.Single().SueNumber;
 
             var part2MatchingSues = auntSues
-                .Where(x => Processor.TestValueEqualityOrNull(x.Children, 3))
-                .Where(x => Processor.TestValueGreaterThanOrNull(x.Cats, 7))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Samoyeds, 2))
-                .Where(x => Processor.TestValueLessThanOrNull(x.Pomeranians, 3))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Akitas, 0))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Vizslas, 0))
-                .Where(x => Processor.TestValueLessThanOrNull(x.Goldfish, 5))
-                .Where(x => Processor.TestValueGreaterThanOrNull(x.Trees, 3))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Cars, 2))
-                .Where(x => Processor.TestValueEqualityOrNull(x.Perfumes, 1))
+                .Where(x => Processor.TestValueEqualityOrNull(x["children"], 3))
+                .Where(x => Processor.TestValueGreaterThanOrNull(x["cats"], 7))
+                .Where(x => Processor.TestValueEqualityOrNull(x["samoyeds"], 2))
+                .Where(x => Processor.TestValueLessThanOrNull(x["pomeranians"], 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x["akitas"], 0))
+                .Where(x => Processor.TestValueEqualityOrNull(x["vizslas"], 0))
+                .Where(x => Processor.TestValueLessThanOrNull(x["goldfish"], 5))
+                .Where(x => Processor.TestValueGreaterThanOrNull(x["trees"], 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x["cars"], 2))
+                .Where(x => Processor.TestValueEqualityOrNull(x["perfumes"], 1))
                 .ToList();
 
             var part2Answer = part2MatchingSues.Single().SueNumber;
@@ -73,18 +73,28 @@ namespace AdventOfCode.Day16
     {
         public int SueNumber { get; set; }
 
-        public int? Children { get; set; }
-        public int? Cats { get; set; }
-        public int? Samoyeds { get; set; }
-        public int? Pomeranians { get; set; }
-        public int? Akitas { get; set; }
-        public int? Vizslas { get; set; }
-        public int? Goldfish { get; set; }
-        public int? Trees { get; set; }
-        public int? Cars { get; set; }
-        public int? Perfumes { get; set; }
+        private Dictionary<string, int> entries = new Dictionary<string, int>();
 
-        public AuntSue() { }
+        public int? this[string entryKey]
+        {
+            get
+            {
+                if (!entries.ContainsKey(entryKey))
+                    return null;
+
+                return entries[entryKey];
+            }
+            set
+            {
+                if (value == null)
+                    return;
+
+                if (entries.ContainsKey(entryKey))
+                    entries[entryKey] = value.Value;
+                else
+                    entries.Add(entryKey, value.Value);
+            }
+        }
 
         public AuntSue(string instruction)
         {
@@ -99,19 +109,7 @@ namespace AdventOfCode.Day16
 
             foreach (var entry in entries)
             {
-                switch (entry.Key)
-                {
-                    case "children": Children = entry.Value; break;
-                    case "cats": Cats = entry.Value; break;
-                    case "samoyeds": Samoyeds = entry.Value; break;
-                    case "pomeranians": Pomeranians = entry.Value; break;
-                    case "akitas": Akitas = entry.Value; break;
-                    case "vizslas": Vizslas = entry.Value; break;
-                    case "goldfish": Goldfish = entry.Value; break;
-                    case "trees": Trees = entry.Value; break;
-                    case "cars": Cars = entry.Value; break;
-                    case "perfumes": Perfumes = entry.Value; break;
-                }
+                this[entry.Key] = entry.Value;
             }
         }
     }
