@@ -19,20 +19,53 @@ namespace AdventOfCode.Day16
                 .Select(x => new AuntSue(x))
                 .ToList();
 
-            var matchingSues = auntSues
-                .Where(x => x.Children == null || x.Children == 3)
-                .Where(x => x.Cats == null || x.Cats == 7)
-                .Where(x => x.Samoyeds == null || x.Samoyeds == 2)
-                .Where(x => x.Pomeranians == null || x.Pomeranians == 3)
-                .Where(x => x.Akitas == null || x.Akitas == 0)
-                .Where(x => x.Vizslas == null || x.Vizslas == 0)
-                .Where(x => x.Goldfish == null || x.Goldfish == 5)
-                .Where(x => x.Trees == null || x.Trees == 3)
-                .Where(x => x.Cars == null || x.Cars == 2)
-                .Where(x => x.Perfumes == null || x.Perfumes == 1)
+            var part1MatchingSues = auntSues
+                .Where(x => Processor.TestValueEqualityOrNull(x.Children, 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Cats, 7))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Samoyeds, 2))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Pomeranians, 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Akitas, 0))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Vizslas, 0))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Goldfish, 5))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Trees, 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Cars, 2))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Perfumes, 1))
                 .ToList();
 
-            var part1Answer = matchingSues.Single().SueNumber;
+            var part1Answer = part1MatchingSues.Single().SueNumber;
+
+            var part2MatchingSues = auntSues
+                .Where(x => Processor.TestValueEqualityOrNull(x.Children, 3))
+                .Where(x => Processor.TestValueGreaterThanOrNull(x.Cats, 7))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Samoyeds, 2))
+                .Where(x => Processor.TestValueLessThanOrNull(x.Pomeranians, 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Akitas, 0))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Vizslas, 0))
+                .Where(x => Processor.TestValueLessThanOrNull(x.Goldfish, 5))
+                .Where(x => Processor.TestValueGreaterThanOrNull(x.Trees, 3))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Cars, 2))
+                .Where(x => Processor.TestValueEqualityOrNull(x.Perfumes, 1))
+                .ToList();
+
+            var part2Answer = part2MatchingSues.Single().SueNumber;
+        }
+    }
+
+    public static class Processor
+    {
+        public static bool TestValueEqualityOrNull(int? valueToTest, int testingValue)
+        {
+            return valueToTest == null || valueToTest == testingValue;
+        }
+
+        public static bool TestValueGreaterThanOrNull(int? valueToTest, int testingValue)
+        {
+            return valueToTest == null || valueToTest > testingValue;
+        }
+
+        public static bool TestValueLessThanOrNull(int? valueToTest, int testingValue)
+        {
+            return valueToTest == null || valueToTest < testingValue;
         }
     }
 
@@ -50,6 +83,8 @@ namespace AdventOfCode.Day16
         public int? Trees { get; set; }
         public int? Cars { get; set; }
         public int? Perfumes { get; set; }
+
+        public AuntSue() { }
 
         public AuntSue(string instruction)
         {
