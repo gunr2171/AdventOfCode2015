@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +13,26 @@ namespace AdventOfCode.Day16
     {
         static void Main(string[] args)
         {
+            var inputLines = File.ReadAllLines("Input.txt");
 
+            var auntSues = inputLines
+                .Select(x => new AuntSue(x))
+                .ToList();
+
+            var matchingSues = auntSues
+                .Where(x => x.Children == null || x.Children == 3)
+                .Where(x => x.Cats == null || x.Cats == 7)
+                .Where(x => x.Samoyeds == null || x.Samoyeds == 2)
+                .Where(x => x.Pomeranians == null || x.Pomeranians == 3)
+                .Where(x => x.Akitas == null || x.Akitas == 0)
+                .Where(x => x.Vizslas == null || x.Vizslas == 0)
+                .Where(x => x.Goldfish == null || x.Goldfish == 5)
+                .Where(x => x.Trees == null || x.Trees == 3)
+                .Where(x => x.Cars == null || x.Cars == 2)
+                .Where(x => x.Perfumes == null || x.Perfumes == 1)
+                .ToList();
+
+            var part1Answer = matchingSues.Single().SueNumber;
         }
     }
 
