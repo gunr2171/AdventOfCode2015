@@ -24,6 +24,9 @@ namespace AdventOfCode.Day17
             }
 
             var part1Answer = storage.GetTotalWorkingContainerCombinationCount();
+
+            var minContainersNeeded = storage.GetMinimumNumberOfContainersToHoldLiquid();
+            var part2Answer = storage.GetCountOfWorkingCombosForContainerCount(minContainersNeeded);
         }
     }
 
