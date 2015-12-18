@@ -126,21 +126,26 @@ namespace AdventOfCode.Day18
 
         public int CalculateLitNeighborsForLight(int xIndex, int yIndex)
         {
-            var neighbors = EnumLights()
-                .Where(l =>
-                    (l.XIndex == xIndex - 1 && l.YIndex == yIndex - 1) || //top left
-                    (l.XIndex == xIndex - 1 && l.YIndex == yIndex + 0) || //top
-                    (l.XIndex == xIndex - 1 && l.YIndex == yIndex + 1) || //top right
-                    (l.XIndex == xIndex + 0 && l.YIndex == yIndex + 1) || //right
-                    (l.XIndex == xIndex + 1 && l.YIndex == yIndex + 1) || //bottom right
-                    (l.XIndex == xIndex + 1 && l.YIndex == yIndex + 0) || //bottom
-                    (l.XIndex == xIndex + 1 && l.YIndex == yIndex - 1) || //bottom left
-                    (l.XIndex == xIndex + 0 && l.YIndex == yIndex - 1));  //left
+            var hasLeft = yIndex > 0;
+            var hasRight = yIndex < gridSize - 1;
+            var hasTop = xIndex > 0;
+            var hasBottom = xIndex < gridSize - 1;
 
-            var litNeighbors = neighbors.Where(x => x.Value == true);
-            var litNeighborCount = litNeighbors.Count();
+            var litCount = 0;
 
-            return litNeighborCount;
+            //cardinal directions
+            if (hasTop && lights[xIndex - 1, yIndex]) litCount++;
+            if (hasBottom && lights[xIndex + 1, yIndex]) litCount++;
+            if (hasLeft && lights[xIndex, yIndex - 1]) litCount++;
+            if (hasRight && lights[xIndex, yIndex + 1]) litCount++;
+
+            //diagonals
+            if (hasTop && hasLeft && lights[xIndex - 1, yIndex - 1]) litCount++;
+            if (hasTop && hasRight && lights[xIndex - 1, yIndex + 1]) litCount++;
+            if (hasBottom && hasLeft && lights[xIndex + 1, yIndex - 1]) litCount++;
+            if (hasBottom && hasRight && lights[xIndex + 1, yIndex + 1]) litCount++;
+
+            return litCount;
         }
 
         public override string ToString()
