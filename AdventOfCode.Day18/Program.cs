@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TCL.Extensions;
 
 namespace AdventOfCode.Day18
 {
@@ -10,7 +12,13 @@ namespace AdventOfCode.Day18
     {
         static void Main(string[] args)
         {
+            var input = File.ReadAllText("Input.txt");
+            var initialBoard = new Board(100);
+            initialBoard.SetBoardValues(input);
 
+            var finishedBoard = Processor.RunBoardAnimation(initialBoard, 100);
+
+            var part1Answer = Processor.GetCountOfLitLights(finishedBoard);
         }
     }
 
@@ -43,6 +51,13 @@ namespace AdventOfCode.Day18
 
             //else, turn off
             return false;
+        }
+
+        public static int GetCountOfLitLights(Board board)
+        {
+            return board.EnumLights()
+                .Where(l => l.Value == true)
+                .Count();
         }
     }
 
@@ -81,37 +96,46 @@ namespace AdventOfCode.Day18
             var newBoard = new Board(gridSize);
             Array.Copy(this.lights, newBoard.lights, gridSize); //copy over the light values
 
-            for (int row = 0; row < gridSize; row++)
+            foreach (var lightInfo in EnumLights())
             {
-                for (int column = 0; column < gridSize; column++)
-                {
-                    var litNeighborCount = CalculateLitNeighborsForLight(row, column);
-                    var currentValue = lights[row, column];
-                    var newValue = Processor.CalculateNewValueForLight(currentValue, litNeighborCount);
+                var litNeighborCount = CalculateLitNeighborsForLight(lightInfo.XIndex, lightInfo.YIndex);
+                var currentValue = lights[lightInfo.XIndex, lightInfo.YIndex];
+                var newValue = Processor.CalculateNewValueForLight(currentValue, litNeighborCount);
 
-                    newBoard.lights[row, column] = newValue;
-                }
+                newBoard.lights[lightInfo.XIndex, lightInfo.YIndex] = newValue;
             }
 
             return newBoard;
         }
 
-        public int CalculateLitNeighborsForLight(int xIndex, int yIndex)
+        public class LightInfo
+        {
+            public int XIndex { get; set; }
+            public int YIndex { get; set; }
+            public bool Value { get; set; }
+        }
+
+        public IEnumerable<LightInfo> EnumLights()
         {
             var allLights = from row in Enumerable.Range(0, gridSize)
                             from column in Enumerable.Range(0, gridSize)
-                            select new { X = row, Y = column, Value = lights[row, column] };
+                            select new LightInfo { XIndex = row, YIndex = column, Value = lights[row, column] };
 
-            var neighbors = allLights
+            return allLights;
+        }
+
+        public int CalculateLitNeighborsForLight(int xIndex, int yIndex)
+        {
+            var neighbors = EnumLights()
                 .Where(l =>
-                    (l.X == xIndex - 1 && l.Y == yIndex - 1) || //top left
-                    (l.X == xIndex - 1 && l.Y == yIndex + 0) || //top
-                    (l.X == xIndex - 1 && l.Y == yIndex + 1) || //top right
-                    (l.X == xIndex + 0 && l.Y == yIndex + 1) || //right
-                    (l.X == xIndex + 1 && l.Y == yIndex + 1) || //bottom right
-                    (l.X == xIndex + 1 && l.Y == yIndex + 0) || //bottom
-                    (l.X == xIndex + 1 && l.Y == yIndex - 1) || //bottom left
-                    (l.X == xIndex + 0 && l.Y == yIndex - 1));  //left
+                    (l.XIndex == xIndex - 1 && l.YIndex == yIndex - 1) || //top left
+                    (l.XIndex == xIndex - 1 && l.YIndex == yIndex + 0) || //top
+                    (l.XIndex == xIndex - 1 && l.YIndex == yIndex + 1) || //top right
+                    (l.XIndex == xIndex + 0 && l.YIndex == yIndex + 1) || //right
+                    (l.XIndex == xIndex + 1 && l.YIndex == yIndex + 1) || //bottom right
+                    (l.XIndex == xIndex + 1 && l.YIndex == yIndex + 0) || //bottom
+                    (l.XIndex == xIndex + 1 && l.YIndex == yIndex - 1) || //bottom left
+                    (l.XIndex == xIndex + 0 && l.YIndex == yIndex - 1));  //left
 
             var litNeighbors = neighbors.Where(x => x.Value == true);
             var litNeighborCount = litNeighbors.Count();
@@ -123,38 +147,12 @@ namespace AdventOfCode.Day18
         {
             var builder = new StringBuilder();
 
-            for (int row = 0; row < gridSize; row++)
-            {
-                for (int column = 0; column < gridSize; column++)
-                {
-                    var cellDisplayValue = lights[row, column]
-                        ? "#"
-                        : ".";
-
-                    builder.Append(cellDisplayValue);
-                }
-
-                if (row != gridSize - 1) //only add a new line if you are not on the last one
-                    builder.AppendLine();
-            }
-
-            return builder.ToString();
-        }
-    }
-
-    public static class Extensions
-    {
-        public static IEnumerable<IEnumerable<T>> EnumValues<T>(T[,] source, int size)
-        {
-            var values = from x in Enumerable.Range(0, size)
-                         from y in Enumerable.Range(0, size)
-                         orderby x
-                         orderby y
-                         select new { X = x, Y = y, Value = source[x, y] };
-
-            var result = values
-                .GroupBy(x => x.X)
-                .Select(x => x.Select(y => y.Value));
+            var result = EnumLights()
+                .OrderBy(l => l.XIndex)
+                .ThenBy(l => l.YIndex)
+                .GroupBy(l => l.XIndex)
+                .Select(g => g.Select(x => x.Value ? "#" : ".").ToCSV(""))
+                .ToCSV(Environment.NewLine);
 
             return result;
         }

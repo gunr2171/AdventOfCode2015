@@ -81,5 +81,17 @@ namespace AdventOfCode.Day18.Tests
             var actual = board.CalculateLitNeighborsForLight(xIndex, yIndex);
             Assert.AreEqual(expectedLitNeighbors, actual);
         }
+
+        [TestCase(Example_Initial, 15)]
+        [TestCase(Example_1, 11)]
+        [TestCase(Example_4, 4)]
+        public void GetCountOfLitLights(string boardLayout, int expectedLitLights)
+        {
+            var board = new Board(6);
+            board.SetBoardValues(boardLayout);
+
+            var actual = Processor.GetCountOfLitLights(board);
+            Assert.AreEqual(expectedLitLights, actual);
+        }
     }
 }
