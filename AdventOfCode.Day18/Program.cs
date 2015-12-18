@@ -13,12 +13,18 @@ namespace AdventOfCode.Day18
         static void Main(string[] args)
         {
             var input = File.ReadAllText("Input.txt");
-            var initialBoard = new Board(100);
-            initialBoard.SetBoardValues(input);
 
-            var finishedBoard = Processor.RunBoardAnimation(initialBoard, 100);
+            var initialPart1Board = new Board(100);
+            initialPart1Board.SetBoardValues(input);
+            var finishedPart1Board = Processor.RunBoardAnimation(initialPart1Board, 100);
 
-            var part1Answer = Processor.GetCountOfLitLights(finishedBoard);
+            var part1Answer = Processor.GetCountOfLitLights(finishedPart1Board);
+
+            var initialPart2Board = new StuckBoard(100);
+            initialPart2Board.SetBoardValues(input);
+            var finishedPart2Board = Processor.RunBoardAnimation(initialPart1Board, 100);
+
+            var part2Answer = Processor.GetCountOfLitLights(finishedPart1Board);
         }
     }
 
@@ -37,8 +43,75 @@ namespace AdventOfCode.Day18
             return workingBoard;
         }
 
-        public static bool CalculateNewValueForLight(bool currentValue, int litNeighborCount)
+        public static int GetCountOfLitLights(Board board)
         {
+            return board.EnumLights()
+                .Where(l => l.Value == true)
+                .Count();
+        }
+    }
+
+    public class StuckBoard : Board
+    {
+        public StuckBoard(int side) : base(side) { }
+
+        public override bool CalculateNewValueForLight(bool currentValue, int litNeighborCount, int x, int y)
+        {
+            if (
+                (x == 0 && y == 0) ||
+                (x == gridSize - 1 && y == 0) ||
+                (x == 0 && y == gridSize - 1) ||
+                (x == gridSize - 1 && y == gridSize - 1))
+            {
+                //light is stuck on
+                return true;
+            }
+
+            return base.CalculateNewValueForLight(currentValue, litNeighborCount, x, y);
+        }
+
+        public override void SetBoardValues(string rawMatrix)
+        {
+            base.SetBoardValues(rawMatrix);
+
+            //after all the initial values have been set, ensure the corners are on
+            lights[0, 0] = true;
+            lights[0, gridSize - 1] = true;
+            lights[gridSize - 1, 0] = true;
+            lights[gridSize - 1, gridSize - 1] = true;
+        }
+    }
+
+    public class Board
+    {
+        protected int gridSize;
+
+        public Board(int side)
+        {
+            lights = new bool[side, side];
+            gridSize = side;
+        }
+
+        protected bool[,] lights;
+
+        public virtual void SetBoardValues(string rawMatrix)
+        {
+            var rows = rawMatrix
+                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int row = 0; row < gridSize; row++)
+            {
+                for (int column = 0; column < gridSize; column++)
+                {
+                    lights[row, column] = rows[row][column] == '#';
+                }
+            }
+        }
+
+        public virtual bool CalculateNewValueForLight(bool currentValue, int litNeighborCount, int x, int y)
+        {
+            //this version of the method does not care about the x and y values
+
             if (currentValue == true && (litNeighborCount == 2 || litNeighborCount == 3))
             {
                 return true;
@@ -51,40 +124,6 @@ namespace AdventOfCode.Day18
 
             //else, turn off
             return false;
-        }
-
-        public static int GetCountOfLitLights(Board board)
-        {
-            return board.EnumLights()
-                .Where(l => l.Value == true)
-                .Count();
-        }
-    }
-
-    public class Board
-    {
-        private int gridSize;
-
-        public Board(int side)
-        {
-            lights = new bool[side, side];
-            gridSize = side;
-        }
-
-        private bool[,] lights;
-
-        public void SetBoardValues(string rawMatrix)
-        {
-            var rows = rawMatrix
-                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-            for (int row = 0; row < gridSize; row++)
-            {
-                for (int column = 0; column < gridSize; column++)
-                {
-                    lights[row, column] = rows[row][column] == '#';
-                }
-            }
         }
 
         /// <summary>
@@ -100,7 +139,7 @@ namespace AdventOfCode.Day18
             {
                 var litNeighborCount = CalculateLitNeighborsForLight(lightInfo.XIndex, lightInfo.YIndex);
                 var currentValue = lights[lightInfo.XIndex, lightInfo.YIndex];
-                var newValue = Processor.CalculateNewValueForLight(currentValue, litNeighborCount);
+                var newValue = CalculateNewValueForLight(currentValue, litNeighborCount, lightInfo.XIndex, lightInfo.YIndex);
 
                 newBoard.lights[lightInfo.XIndex, lightInfo.YIndex] = newValue;
             }
