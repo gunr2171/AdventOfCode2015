@@ -134,7 +134,8 @@ namespace AdventOfCode.Day18
                     builder.Append(cellDisplayValue);
                 }
 
-                builder.AppendLine();
+                if (row != gridSize - 1) //only add a new line if you are not on the last one
+                    builder.AppendLine();
             }
 
             return builder.ToString();
