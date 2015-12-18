@@ -13,4 +13,21 @@ namespace AdventOfCode.Day18
 
         }
     }
+
+    public static class Processor
+    {
+        public static Board RunBoardAnimation(Board initialBoardLayout, int stepCount)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Board
+    {
+
+        public static Board FromInstructionString(string matrix)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
