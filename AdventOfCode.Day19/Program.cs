@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +13,21 @@ namespace AdventOfCode.Day19
     {
         static void Main(string[] args)
         {
+            var inputLines = File.ReadAllLines("Input.txt");
 
+            var replacementLines = inputLines
+                .TakeWhile(x => !x.IsNullOrWhiteSpace());
+
+            var startingMolecule = inputLines.Last();
+
+            var machine = new Machine();
+
+            foreach (var replacement in replacementLines)
+            {
+                machine.AddReplacement(replacement);
+            }
+
+            var part1Answer = machine.CalculateDistinctMoleculesCount(startingMolecule);
         }
     }
 
