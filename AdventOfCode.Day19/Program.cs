@@ -46,10 +46,13 @@ namespace AdventOfCode.Day19
             replacements.Add(newReplacement);
         }
 
-        public int CalculateDistinctMoleculesCount(string inputMolecule)
+        public int CalculateShortestStepsNeededToCreateTargetMolecule(string targetMolecule)
         {
-            List<string> allMolecules = new List<string>();
+            throw new NotImplementedException();
+        }
 
+        public IEnumerable<string> EnumReplacementsForMolecule(string inputMolecule)
+        {
             foreach (var replacement in replacements)
             {
                 var regex = new Regex(replacement.Input);
@@ -64,11 +67,16 @@ namespace AdventOfCode.Day19
 
                     var newString = originalLeft + replacementValue + originalRight;
 
-                    allMolecules.Add(newString);
+                    yield return newString;
                 }
             }
+        }
 
-            var distinctCount = allMolecules.Distinct().Count();
+        public int CalculateDistinctMoleculesCount(string inputMolecule)
+        {
+            var distinctCount = EnumReplacementsForMolecule(inputMolecule)
+                .Distinct()
+                .Count();
             return distinctCount;
         }
     }
