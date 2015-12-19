@@ -22,9 +22,9 @@ namespace AdventOfCode.Day18
 
             var initialPart2Board = new StuckBoard(100);
             initialPart2Board.SetBoardValues(input);
-            var finishedPart2Board = Processor.RunBoardAnimation(initialPart1Board, 100);
+            var finishedPart2Board = Processor.RunBoardAnimation(initialPart2Board, 100);
 
-            var part2Answer = Processor.GetCountOfLitLights(finishedPart1Board);
+            var part2Answer = Processor.GetCountOfLitLights(finishedPart2Board);
         }
     }
 
