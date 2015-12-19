@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TCL.Extensions;
 
 namespace AdventOfCode.Day19
 {
@@ -32,18 +33,28 @@ namespace AdventOfCode.Day19
 
         public int CalculateDistinctMoleculesCount(string inputMolecule)
         {
-            var startingMolecule = new Molecule(inputMolecule);
+            List<string> allMolecules = new List<string>();
 
-            foreach (var atom in startingMolecule.EnumAtoms())
+            foreach (var replacement in replacements)
             {
-                var matchingReplacements = replacements
-                    .Where(x => x.Input == atom);
+                var regex = new Regex(replacement.Input);
+                var matches = regex.Matches(inputMolecule);
 
-                foreach (var replacement in matchingReplacements)
+                foreach (var match in matches.OfType<Match>())
                 {
-                    
+                    var replacementValue = replacement.Output;
+
+                    var originalLeft = inputMolecule.Substring(0, match.Index);
+                    var originalRight = inputMolecule.Substring(match.Index + match.Length);
+
+                    var newString = originalLeft + replacementValue + originalRight;
+
+                    allMolecules.Add(newString);
                 }
             }
+
+            var distinctCount = allMolecules.Distinct().Count();
+            return distinctCount;
         }
     }
 
@@ -51,21 +62,26 @@ namespace AdventOfCode.Day19
     {
         public string Input { get; set; }
         public string Output { get; set; }
-    }
 
-    public class Molecule
-    {
-        private List<char> letters = new List<char>();
-
-        public Molecule(string input)
+        public override string ToString()
         {
-
-        }
-
-        public IEnumerable<string> EnumAtoms()
-        {
-
+            return "{0} => {1}".FormatInline(Input, Output);
         }
     }
+
+    //public class Molecule
+    //{
+    //    private List<char> letters = new List<char>();
+
+    //    public Molecule(string input)
+    //    {
+
+    //    }
+
+    //    public IEnumerable<string> EnumAtoms()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 
 }
