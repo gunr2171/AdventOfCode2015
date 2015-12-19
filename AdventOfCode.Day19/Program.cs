@@ -68,20 +68,4 @@ namespace AdventOfCode.Day19
             return "{0} => {1}".FormatInline(Input, Output);
         }
     }
-
-    //public class Molecule
-    //{
-    //    private List<char> letters = new List<char>();
-
-    //    public Molecule(string input)
-    //    {
-
-    //    }
-
-    //    public IEnumerable<string> EnumAtoms()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
-
 }
