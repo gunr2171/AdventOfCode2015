@@ -12,13 +12,17 @@ namespace AdventOfCode.Day21
     {
         static void Main(string[] args)
         {
-            var winningFights = ItemShop.EnumAllPlayerItemOptions()
-                .Select(x => FightSimulator.CalculatePlayerStats(x))
-                .Where(x => FightSimulator.SimulateFight(x, new PlayerStats { HitPoints = 104, Damage = 8, Armor = 1 }))
-                .OrderBy(x => x.GoldSpentOnItems)
-                .ToList();
+            var allFights = ItemShop.EnumAllPlayerItemOptions()
+                .Select(x => FightSimulator.CalculatePlayerStats(x));
+
+            var winningFights = allFights
+                .Where(x => FightSimulator.SimulateFight(x, new PlayerStats { HitPoints = 104, Damage = 8, Armor = 1 }));
+
+            var losingFights = allFights
+                .Where(x => !FightSimulator.SimulateFight(x, new PlayerStats { HitPoints = 104, Damage = 8, Armor = 1 }));
 
             var part1Answer = winningFights.Min(x => x.GoldSpentOnItems);
+            var part2Answer = losingFights.Max(x => x.GoldSpentOnItems);
         }
     }
 
