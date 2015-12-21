@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdventOfCode.Common;
+using TCL.Extensions;
 
 namespace AdventOfCode.Day21
 {
@@ -11,18 +12,13 @@ namespace AdventOfCode.Day21
     {
         static void Main(string[] args)
         {
-            var bossStats = new PlayerStats()
-            {
-                HitPoints = 104,
-                Damage = 8,
-                Armor = 1
-            };
-
             var winningFights = ItemShop.EnumAllPlayerItemOptions()
                 .Select(x => FightSimulator.CalculatePlayerStats(x))
-                .Where(x => FightSimulator.SimulateFight(x, bossStats));
+                .Where(x => FightSimulator.SimulateFight(x, new PlayerStats { HitPoints = 104, Damage = 8, Armor = 1 }))
+                .OrderBy(x => x.GoldSpentOnItems)
+                .ToList();
 
-            var part1Answer = winningFights.Min(x => x.GoalSpentOnItems);
+            var part1Answer = winningFights.Min(x => x.GoldSpentOnItems);
         }
     }
 
@@ -35,10 +31,11 @@ namespace AdventOfCode.Day21
                 Armor = loadout.Sum(x => x.Armor),
                 Damage = loadout.Sum(x => x.Damage),
                 HitPoints = 100, //player is always 100 HP
-                GoalSpentOnItems = loadout.Sum(x => x.Cost)
+                GoldSpentOnItems = loadout.Sum(x => x.Cost),
+                Items = loadout
             };
         }
-        
+
         /// <summary>
         /// Returns true if the player wins the fight.
         /// </summary>
@@ -47,6 +44,7 @@ namespace AdventOfCode.Day21
         /// <returns></returns>
         public static bool SimulateFight(PlayerStats playerStats, PlayerStats bossStats)
         {
+            var hasSW = playerStats.Items.Select(x => x.Name).Contains("Shortsword");
             bool playerIsAttacking = true;
 
             while (playerStats.HitPoints > 0 && bossStats.HitPoints > 0)
@@ -108,11 +106,11 @@ namespace AdventOfCode.Day21
 
             foreach (var weaponOption in weapons.GetKCombs(1)) //must be exactly 1 weapon
             {
-                foreach (var armorNumber in Enumerable.Range(0, 1)) //armor can be either 0 or 1
+                foreach (var armorNumber in Enumerable.Range(0, 2)) //armor can be either 0 or 1
                 {
                     foreach (var armorOption in armors.GetKCombs(armorNumber))
                     {
-                        foreach (var ringNumber in Enumerable.Range(0, 2)) //ring can be 0, 1, or 2
+                        foreach (var ringNumber in Enumerable.Range(0, 3)) //ring can be 0, 1, or 2
                         {
                             foreach (var ringOption in rings.GetKCombs(ringNumber))
                             {
@@ -136,7 +134,20 @@ namespace AdventOfCode.Day21
         public int Damage { get; set; }
         public int Armor { get; set; }
 
-        public int GoalSpentOnItems { get; set; }
+        public int GoldSpentOnItems { get; set; }
+
+        public List<Item> Items { get; set; }
+
+        public PlayerStats()
+        {
+            Items = new List<Item>();
+        }
+
+        public override string ToString()
+        {
+            return "Gold: {0}, HP: {1}, Damage: {2}, Armor: {3} | ".FormatInline(GoldSpentOnItems, HitPoints, Damage, Armor)
+                + Items.ToCSV(", ", x => x.Name);
+        }
     }
 
     public class Item : IComparable, IComparable<Item>
@@ -156,6 +167,11 @@ namespace AdventOfCode.Day21
         public int CompareTo(Item other)
         {
             return this.Name.CompareTo(other.Name);
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 
