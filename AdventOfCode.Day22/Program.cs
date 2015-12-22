@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TCL.Extensions;
 
 namespace AdventOfCode.Day22
 {
@@ -17,8 +18,6 @@ namespace AdventOfCode.Day22
     {
         public static bool SimulateFight(FighterStats initialPlayerStats, BossStats initialBossStats, List<Spell> playerSpellList)
         {
-            throw new NotImplementedException();
-
             var activeEffects = new List<Effect>();
             bool playerIsAttacking = true;
             var currentSpellIndex = 0;
@@ -35,19 +34,50 @@ namespace AdventOfCode.Day22
                     break;
                 }
 
-                SimulateRound(activeEffects, playerIsAttacking, currentFightStats, playerSpellList[currentSpellIndex]);
-                currentSpellIndex += 1;
+                var spellToCast = playerIsAttacking
+                    ? playerSpellList[currentSpellIndex]
+                    : null;
+
+                SimulateRound(activeEffects, playerIsAttacking, currentFightStats, spellToCast);
+
+                if (playerIsAttacking) //if the player just attacked, switch to the next spell to use
+                    currentSpellIndex += 1;
+
+                playerIsAttacking = !playerIsAttacking;
             }
+
+            return currentFightStats.PlayerStats.HitPoints > 0;
         }
 
         private static void SimulateRound(List<Effect> activeEffects, bool playerIsAttacking, FightRoundResults currentStats, Spell spellToCast)
         {
             //start of round, apply effects
-            foreach (var effect in activeEffects)
+            foreach (var effect in activeEffects.ToList())
             {
-                throw new NotImplementedException();
+                //has the effect expired?
+                if (effect.ActiveTurns == 0)
+                {
+                    if (effect.OnEffectExpire != null)
+                        effect.OnEffectExpire(currentStats);
+                    activeEffects.Remove(effect);
+                    continue;
+                }
+
+                //run action on round start if there is one
+                if (effect.OnRoundStart != null)
+                    effect.OnRoundStart(currentStats);
+
+                //effect has been used this round, reduce turn use
+                effect.ActiveTurns -= 1;
             }
 
+            //is the boss dead because of effects?
+            if (currentStats.BossStats.HitPoints <= 0)
+            {
+                return;
+            }
+
+            //start the attack phase
             if (playerIsAttacking)
             {
                 //can you cast the spell?
@@ -61,7 +91,22 @@ namespace AdventOfCode.Day22
                 //cast the spell
                 currentStats.PlayerStats.Mana -= spellToCast.ManaCost;
                 currentStats.PlayerStats.HitPoints += spellToCast.Healing;
-                currentStats.BossStats.HitPoints = CalculateNewHitPointsAfterAttack(currentStats.BossStats.HitPoints, spellToCast.Damage, currentStats.BossStats.Armor);
+
+                if (spellToCast.Damage > 0) //if this spell is intended to attack, attack
+                {
+                    currentStats.BossStats.HitPoints = CalculateNewHitPointsAfterAttack(currentStats.BossStats.HitPoints, spellToCast.Damage, currentStats.BossStats.Armor);
+                }
+
+                if (spellToCast.Effect != null)
+                {
+                    activeEffects.Add(new Effect(spellToCast.Effect));
+
+                    //if there is an action to run when the effect is casted, run it
+                    if (spellToCast.Effect.OnEffectCast != null)
+                    {
+                        spellToCast.Effect.OnEffectCast(currentStats);
+                    }
+                }
             }
             else
             {
@@ -145,23 +190,35 @@ namespace AdventOfCode.Day22
             Armor = armor;
             Mana = mana;
         }
+
+        public override string ToString()
+        {
+            return "HP: {0}, Armor: {1}, Mana: {2}".FormatInline(HitPoints, Armor, Mana);
+        }
     }
 
     public class BossStats : FighterStats
     {
         public int Attack { get; set; }
 
-        public BossStats(BossStats copyStats):base(copyStats)
+        public BossStats(BossStats copyStats)
+            : base(copyStats)
         {
             Attack = copyStats.Attack;
         }
 
         public BossStats(int hp, int armor, int mana, int attack)
+            : base(hp, armor, mana)
         {
             Attack = attack;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + ", Attack: {0}".FormatInline(Attack);
+        }
     }
-    
+
     public class FightRoundResults
     {
         public FighterStats PlayerStats { get; set; }
@@ -176,14 +233,35 @@ namespace AdventOfCode.Day22
         public int Healing { get; set; }
 
         public Effect Effect { get; set; }
+
+        public override string ToString()
+        {
+            return "{0}, Mana: {1}, Damage: {2}, Healing: {3}, Effect: {4}"
+                .FormatInline(Name, ManaCost, Damage, Healing, Effect != null);
+        }
     }
 
     public class Effect
     {
+        public Effect() { }
+
+        public Effect(Effect copyEffect)
+        {
+            ActiveTurns = copyEffect.ActiveTurns;
+            OnEffectCast = copyEffect.OnEffectCast;
+            OnRoundStart = copyEffect.OnRoundStart;
+            OnEffectExpire = copyEffect.OnEffectExpire;
+        }
+
         public int ActiveTurns { get; set; }
 
         public Action<FightRoundResults> OnEffectCast { get; set; }
         public Action<FightRoundResults> OnRoundStart { get; set; }
         public Action<FightRoundResults> OnEffectExpire { get; set; }
+
+        public override string ToString()
+        {
+            return "Turns Left: {0}".FormatInline(ActiveTurns);
+        }
     }
 }
