@@ -61,7 +61,7 @@ namespace AdventOfCode.Day22
                 //cast the spell
                 currentStats.PlayerStats.Mana -= spellToCast.ManaCost;
                 currentStats.PlayerStats.HitPoints += spellToCast.Healing;
-                currentStats.BossStats.HitPoints = CalculateNewHitPointsAfterAttack(currentStats.BossStats.HitPoints, spellToCast.Damage, 0);
+                currentStats.BossStats.HitPoints = CalculateNewHitPointsAfterAttack(currentStats.BossStats.HitPoints, spellToCast.Damage, currentStats.BossStats.Armor);
             }
             else
             {
@@ -78,6 +78,49 @@ namespace AdventOfCode.Day22
 
             var newHP = startingHitPoints - netDamage;
             return newHP;
+        }
+
+        public static IEnumerable<Spell> EnumAllSpells()
+        {
+            yield return new Spell() { Name = "Magic Missile", ManaCost = 53, Damage = 4 };
+            yield return new Spell() { Name = "Drain", ManaCost = 73, Damage = 2, Healing = 2 };
+
+            yield return new Spell()
+            {
+                Name = "Shield",
+                ManaCost = 113,
+                Effect = new Effect
+                {
+                    ActiveTurns = 6,
+                    OnEffectCast = (cs) => cs.PlayerStats.Armor += 7,
+                    OnRoundStart = null, //nothing to do on round start
+                    OnEffectExpire = (cs) => cs.PlayerStats.Armor -= 7
+                }
+            };
+            yield return new Spell()
+            {
+                Name = "Poison",
+                ManaCost = 173,
+                Effect = new Effect
+                {
+                    ActiveTurns = 6,
+                    OnEffectCast = null,
+                    OnRoundStart = (cs) => cs.BossStats.HitPoints = Processor.CalculateNewHitPointsAfterAttack(cs.BossStats.HitPoints, 3, cs.BossStats.Armor),
+                    OnEffectExpire = null,
+                }
+            };
+            yield return new Spell()
+            {
+                Name = "Recharge",
+                ManaCost = 229,
+                Effect = new Effect
+                {
+                    ActiveTurns = 5,
+                    OnEffectCast = null,
+                    OnRoundStart = (cs) => cs.PlayerStats.Mana += 101,
+                    OnEffectExpire = null,
+                }
+            };
         }
     }
 
@@ -137,6 +180,10 @@ namespace AdventOfCode.Day22
 
     public class Effect
     {
-        //public int T
+        public int ActiveTurns { get; set; }
+
+        public Action<FightRoundResults> OnEffectCast { get; set; }
+        public Action<FightRoundResults> OnRoundStart { get; set; }
+        public Action<FightRoundResults> OnEffectExpire { get; set; }
     }
 }
