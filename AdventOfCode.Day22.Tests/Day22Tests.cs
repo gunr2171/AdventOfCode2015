@@ -12,7 +12,7 @@ namespace AdventOfCode.Day22.Tests
         public void SimulateFight_Part1_Example1()
         {
             var playerStats = new FighterStats(10, 0, 250);
-            var bossStats = new BossStats(13, 0, 0, 8);
+            var bossStats = new BossStats(13, 8);
 
             var spellNamesToCast = new []
             {
@@ -34,7 +34,7 @@ namespace AdventOfCode.Day22.Tests
         public void SimulateFight_Part1_Example2()
         {
             var playerStats = new FighterStats(10, 0, 250);
-            var bossStats = new BossStats(14, 0, 0, 8);
+            var bossStats = new BossStats(14, 8);
 
             var spellNamesToCast = new[]
             {

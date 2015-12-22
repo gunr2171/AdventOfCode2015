@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TCL.Extensions;
+using AdventOfCode.Common;
 
 namespace AdventOfCode.Day22
 {
@@ -11,11 +12,34 @@ namespace AdventOfCode.Day22
     {
         static void Main(string[] args)
         {
+            var playerStats = new FighterStats(50, 0, 500);
+            var inputBossStats = new BossStats(58, 9);
+            var spellLoadouts = Processor.EnumAllSpellPermutations(10);
+
+            var winningFights = spellLoadouts
+                .Where(x => Processor.SimulateFight(playerStats, inputBossStats, x));
+
+            var lowestManaCostToWin = winningFights
+                .Select(spells => spells.Sum(s => s.ManaCost))
+                .Min();
+
+            var part1Answer = lowestManaCostToWin;
         }
     }
 
     public static class Processor
     {
+        public static IEnumerable<List<Spell>> EnumAllSpellPermutations(int maxRounds)
+        {
+            foreach (var numberOfSpells in Enumerable.Range(1, maxRounds))
+            {
+                foreach (var permutation in EnumAllSpells().GetPermutationsWithRept(numberOfSpells))
+                {
+                    yield return permutation.ToList();
+                }
+            }
+        }
+
         public static bool SimulateFight(FighterStats initialPlayerStats, BossStats initialBossStats, List<Spell> playerSpellList)
         {
             var activeEffects = new List<Effect>();
@@ -80,11 +104,20 @@ namespace AdventOfCode.Day22
             //start the attack phase
             if (playerIsAttacking)
             {
-                //can you cast the spell?
+                //do you have enough mana to cast the spell?
                 if (spellToCast.ManaCost > currentStats.PlayerStats.Mana)
                 {
                     //you don't have enough to cast the spell, die
                     currentStats.PlayerStats.HitPoints = -1;
+                    return;
+                }
+
+                //if this spell has an effect, is one already active?
+                if (spellToCast.Effect != null && activeEffects.Select(x => x.Name).Contains(spellToCast.Effect.Name))
+                {
+                    //you can't cast a spell while it's already active
+                    //you die, for some reason
+                    currentStats.PlayerStats.HitPoints = -20;
                     return;
                 }
 
@@ -136,6 +169,7 @@ namespace AdventOfCode.Day22
                 ManaCost = 113,
                 Effect = new Effect
                 {
+                    Name = "Shield",
                     ActiveTurns = 6,
                     OnEffectCast = (cs) => cs.PlayerStats.Armor += 7,
                     OnRoundStart = null, //nothing to do on round start
@@ -148,6 +182,7 @@ namespace AdventOfCode.Day22
                 ManaCost = 173,
                 Effect = new Effect
                 {
+                    Name = "Poison",
                     ActiveTurns = 6,
                     OnEffectCast = null,
                     OnRoundStart = (cs) => cs.BossStats.HitPoints = Processor.CalculateNewHitPointsAfterAttack(cs.BossStats.HitPoints, 3, cs.BossStats.Armor),
@@ -160,6 +195,7 @@ namespace AdventOfCode.Day22
                 ManaCost = 229,
                 Effect = new Effect
                 {
+                    Name = "Recharge",
                     ActiveTurns = 5,
                     OnEffectCast = null,
                     OnRoundStart = (cs) => cs.PlayerStats.Mana += 101,
@@ -207,8 +243,8 @@ namespace AdventOfCode.Day22
             Attack = copyStats.Attack;
         }
 
-        public BossStats(int hp, int armor, int mana, int attack)
-            : base(hp, armor, mana)
+        public BossStats(int hp, int attack)
+            : base(hp, 0, 0)
         {
             Attack = attack;
         }
@@ -247,6 +283,7 @@ namespace AdventOfCode.Day22
 
         public Effect(Effect copyEffect)
         {
+            Name = copyEffect.Name;
             ActiveTurns = copyEffect.ActiveTurns;
             OnEffectCast = copyEffect.OnEffectCast;
             OnRoundStart = copyEffect.OnRoundStart;
@@ -254,6 +291,7 @@ namespace AdventOfCode.Day22
         }
 
         public int ActiveTurns { get; set; }
+        public string Name { get; set; }
 
         public Action<FightRoundResults> OnEffectCast { get; set; }
         public Action<FightRoundResults> OnRoundStart { get; set; }
@@ -261,7 +299,7 @@ namespace AdventOfCode.Day22
 
         public override string ToString()
         {
-            return "Turns Left: {0}".FormatInline(ActiveTurns);
+            return "{0}, Turns Left: {1}".FormatInline(Name, ActiveTurns);
         }
     }
 }
