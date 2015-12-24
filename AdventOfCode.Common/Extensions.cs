@@ -34,6 +34,14 @@ namespace AdventOfCode.Common
 
         public static IEnumerable<IEnumerable<T>> GetKCombs<T>(this IEnumerable<T> list, int length) where T : IComparable
         {
+            if (length == 0)
+            {
+                return new List<IEnumerable<T>>
+                {
+                    Enumerable.Empty<T>()
+                };
+            }
+
             if (length == 1) return list.Select(t => new T[] { t });
             return GetKCombs(list, length - 1)
                 .SelectMany(t => list.Where(o => o.CompareTo(t.Last()) > 0),
